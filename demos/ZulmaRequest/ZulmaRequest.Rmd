@@ -1,0 +1,63 @@
+---
+title: "Lat/lon queries"
+author: "OJ Watson"
+date: '`r format(Sys.time(), ''%d %B, %Y'')`'
+output:
+  pdf_document:
+    toc: yes
+  html_document:
+    code_folding: show
+    css: knitr.css
+    fig_caption: yes
+    keep_md: yes
+    theme: readable
+    toc: yes
+    toc_float: yes
+---
+
+## Overview
+  
+1. Intro
+2. LatLon Examples
+3. Extra
+
+## 1. Intro
+
+The following shows a simple way to fetch latitude/longitude coordinates for a street
+address or similar using [ggmap](https://github.com/dkahle/ggmap). This package 
+simply uses Google's geocoding API and thus will cap out at 2500 queries per day. 
+Might be a way to spoof Google API to get round this but I haven't tried before. 
+
+## 2. LatLon Examples
+
+Following simply shows how to use it. 
+
+```{r Fetch location, echo=TRUE, include=TRUE, message = FALSE, warning = FALSE}
+
+install.packages("ggmap",repos = "https://cloud.r-project.org/")
+
+## Then let's build a function to query google for the lat long of our location
+latlon_list <- function(location){   
+  
+  # use the gecode function to query google servers
+  geo_reply = ggmap::geocode(location, output='latlon', messaging=FALSE, override_limit=TRUE)
+  
+  return(list("lat"=geo_reply$lat,"lon"=geo_reply$lon))
+}
+
+## Example address
+location <- "Cra. 27 #7-48, Bogotá, Colombia"
+
+## Example use
+latlon_list(location)
+
+```
+
+## 3. Extra
+
+Can also get more information about the address by changing the ouput argument
+to "all".
+
+``` {r Demo, echo=TRUE, include=TRUE, message = FALSE, warning = FALSE}
+str(ggmap::geocode(location, output='all', messaging=FALSE, override_limit=TRUE))
+```
